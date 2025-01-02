@@ -60,6 +60,14 @@ function App() {
       });
   }, [location]);
 
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = 0;
+    }
+  }, [weatherData]);
+
   function handleLocationChange(newLocation: GeoName) {
     setLocation(newLocation);
     setIsSearchOpen(false);
@@ -120,7 +128,10 @@ function App() {
                 label="Hourly Forecast"
                 icon={<Icon icon="ic:baseline-access-time" />}
               >
-                <div className="mt-2 hide-scrollbar flex gap-2.5 items-center overflow-auto w-full snap-x">
+                <div
+                  className="mt-2 hide-scrollbar flex gap-2.5 items-center overflow-auto w-full snap-x"
+                  ref={scrollRef}
+                >
                   {hourlyForecastList?.map((item) => (
                     <HourlyForecast data={item} key={item.time_epoch} />
                   ))}
