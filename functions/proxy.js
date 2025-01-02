@@ -7,7 +7,7 @@ exports.handler = async (event) => {
 
   // Build the API URL based on the endpoint parameter
   if (endpoint === "weather") {
-    apiUrl = `http://api.weatherapi.com/v1/forecast.json?key=55e5d3bb34ea4b829b3114746242011&q=${lat},${lon}&days=10&aqi=no&alerts=no`;
+    apiUrl = `http://api.weatherapi.com/v1/forecast.json?key=5f28edb39ec341cd94b202908250201&q=${lat},${lon}&days=10&aqi=no&alerts=no`;
   } else if (endpoint === "city") {
     apiUrl = `http://api.geonames.org/searchJSON?q=${query}&orderby=relevance&username=vladyslavayakovenko`;
   } else if (endpoint === "coords") {
