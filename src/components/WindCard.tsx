@@ -15,7 +15,7 @@ function WindCard(props: Props) {
         <img
           style={{ transform: `rotate(${props.degree + 180}deg)` }}
           className="w-[90%] h-[90%] transition-all duration-500"
-          src="src/assets/Group1.svg"
+          src="compass-arrow.svg"
         />
       </div>
 
