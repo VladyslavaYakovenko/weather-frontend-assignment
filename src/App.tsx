@@ -40,11 +40,14 @@ function App() {
   ));
 
   const hourlyForecastList = hourlyForecast
-    ?.filter(
-      (item) =>
-        new Date(item.time).getHours() >= new Date().getHours() ||
-        !dayjs(item.time).isToday()
-    )
+    ?.filter((item) => {
+      const forecastTime = dayjs(item.time).tz(weatherData?.location.tz_id);
+      const localTime = dayjs(weatherData?.location.localtime).tz(
+        weatherData?.location.tz_id
+      );
+
+      return forecastTime.hour() >= localTime.hour() || !forecastTime.isToday();
+    })
     .slice(0, 24);
 
   React.useEffect(() => {
