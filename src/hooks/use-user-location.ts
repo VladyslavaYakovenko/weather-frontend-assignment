@@ -1,6 +1,7 @@
 import React from "react";
 import { fetchCityLocationByCoords } from "../api/weather";
 import { GeoName } from "../types";
+import { toast } from "react-toastify";
 
 export interface Coordinates {
   lat: number;
@@ -11,12 +12,17 @@ const useUserLocation = () => {
   const [location, setLocation] = React.useState<GeoName>();
 
   React.useEffect(() => {
+    console.log("Getting user location");
+
     getUserLocation();
   }, []);
 
   function getUserLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(success, error);
+      navigator.geolocation.getCurrentPosition(success, (err) => {
+        toast.error(err.message);
+        toast.error("Please enable location services in your browser.");
+      });
     } else {
       console.log("Geolocation not supported");
     }
@@ -36,10 +42,6 @@ const useUserLocation = () => {
     console.log(`Latitude: ${lat}, Longitude: ${lon}`);
     console.log(position);
   };
-
-  function error() {
-    console.log("Unable to retrieve your location");
-  }
 
   return { location, setLocation };
 };
