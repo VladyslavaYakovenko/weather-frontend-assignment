@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import CityCard from "./CItyCard";
 import { fetchCityLocation } from "../api/weather";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import debounce from "lodash/debounce";
 import { GeoName, LastSearhedGeoName } from "../types";
 
@@ -18,6 +18,8 @@ function Search(props: Props) {
   const [cities, setCities] = useState<GeoName[]>(loadLastSearched());
   const [isShowAll, setIsShowAll] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
+
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const [lastSearched, setLastSearched] = useState<LastSearhedGeoName[]>(
     loadLastSearched()
@@ -71,16 +73,30 @@ function Search(props: Props) {
   }
 
   function getCitiesForecast(city: string) {
-    fetchCityLocation(city)
+    // Cancel any ongoing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+
+    const { signal } = abortControllerRef.current;
+
+    fetchCityLocation(city, signal)
       .then((data) => {
         setCities(
           data.geonames.filter((i) =>
             i.name.toLowerCase().startsWith(city.toLowerCase())
           )
         );
+        abortControllerRef.current = null;
       })
       .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
+        if (error.name === "AbortError") {
+          console.log("Request was aborted");
+        } else {
+          console.error("There was a problem with the fetch operation:", error);
+        }
       });
   }
 

@@ -17,9 +17,13 @@ export function fetchWeatherData({
   });
 }
 
-export function fetchCityLocation(query: string): Promise<GeoNameResponse> {
+export function fetchCityLocation(
+  query: string,
+  signal: AbortSignal
+): Promise<GeoNameResponse> {
   return fetch(
-    `http://api.geonames.org/searchJSON?q=${query}&orderby=relevance&username=vladyslavayakovenko`
+    `http://api.geonames.org/searchJSON?q=${query}&orderby=relevance&username=vladyslavayakovenko`,
+    { signal }
   ).then((response) => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
