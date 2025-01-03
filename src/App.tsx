@@ -14,6 +14,7 @@ import FeelsLike from "./components/FeelsLike";
 import { getVisibilityDescription } from "./helpers";
 import UvIndex from "./components/UvIndex";
 import WindCard from "./components/WindCard";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   const [weatherData, setWeatherData] = React.useState<WeatherData>();
@@ -59,6 +60,7 @@ function App() {
         console.log(data);
       })
       .catch((error) => {
+        toast.error(`Cannot fetch weather data for ${location.name}`);
         console.error("There was a problem with the fetch operation:", error);
       });
   }, [location]);
@@ -79,6 +81,8 @@ function App() {
   return (
     <div className=" flex h-screen bg-sky-700 text-slate-300 pb-6 overflow-hidden">
       <div className="px-6 xl:px-24 flex-1 overflow-auto flex flex-col hide-scrollbar">
+        <ToastContainer />
+
         {!weatherData ? (
           <div className="w-full h-full flex items-center justify-center">
             <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-sky-100"></div>
@@ -168,14 +172,23 @@ function App() {
                 label="Sunrise"
                 icon={<Icon icon="ic:outline-wb-sunny" />}
               >
-                <div className="flex flex-col h-full justify-center gap-6">
-                  <p className=" text-2xl xl:text-4xl">
-                    {weatherData?.forecast.forecastday[0].astro.sunrise}
+                {" "}
+                {weatherData?.forecast.forecastday[0].astro.sunrise ===
+                weatherData?.forecast.forecastday[0].astro.sunset ? (
+                  <p className="flex h-full items-center text-lg">
+                    The sun does not rise or set in your region today.
                   </p>
-                  <p className="text-lg">
-                    Sunset: {weatherData?.forecast.forecastday[0].astro.sunset}
-                  </p>
-                </div>
+                ) : (
+                  <div className="flex flex-col h-full justify-center gap-6">
+                    <p className=" text-2xl xl:text-4xl">
+                      {weatherData?.forecast.forecastday[0].astro.sunrise}
+                    </p>
+                    <p className="text-lg">
+                      Sunset:{" "}
+                      {weatherData?.forecast.forecastday[0].astro.sunset}
+                    </p>
+                  </div>
+                )}
               </Card>
 
               <Card
