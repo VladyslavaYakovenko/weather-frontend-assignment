@@ -25,6 +25,13 @@ exports.handler = async (event) => {
     const response = await fetch(apiUrl);
     const data = await response.json();
 
+    if (data.error) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: "No data found" }),
+      };
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify(data),
