@@ -15,10 +15,13 @@ export function fetchWeatherData({
   );
 }
 
-export function fetchCityLocation(query: string): Promise<GeoNameResponse> {
-  return fetch(
-    `/api/proxy?query=${encodeURIComponent(query)}&endpoint=city`
-  ).then((response) => {
+export function fetchCityLocation(
+  query: string,
+  signal: AbortSignal
+): Promise<GeoNameResponse> {
+  return fetch(`/api/proxy?query=${encodeURIComponent(query)}&endpoint=city`, {
+    signal,
+  }).then((response) => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
